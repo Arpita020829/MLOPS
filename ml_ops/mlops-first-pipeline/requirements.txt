@@ -1,7 +1,0 @@
-scikit-learn
-fastapi
-uvicorn
-joblib
-pydantic
-pytest
-httpx
