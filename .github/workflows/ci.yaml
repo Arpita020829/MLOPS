@@ -1,0 +1,47 @@
+# GitHub Actions workflow for Iris ML API
+
+name: Iris ML API - CI Pipeline
+
+# Run CI when code is pushed or a pull request targets main
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+# Grant read-only access to repository contents
+permissions:
+  contents: read
+
+# Define the jobs in the pipeline
+jobs:
+  test-and-build:
+    # GitHub provides a fresh Ubuntu virtual machine
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      # Step 2: Install Python
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Step 3: Install dependencies
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Step 4: Run automated tests
+      - name: Run automated tests
+        run: python -m pytest -v
+
+      # Step 5: Build Docker image if tests pass
+      - name: Build Docker image
+        run: docker build -t iris-ml-api:${{ github.sha }} .
